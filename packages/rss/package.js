@@ -11,5 +11,3 @@ Package.onUse(function (api) {
   api.addFiles('rss.js', 'server');
   api.export('RSS');
 });
-
-RSS = Npm.require('rss');
