@@ -4,9 +4,10 @@ Bitly = {};
 Bitly.shortenURL = function(url) {
 
 	console.log('shortenURL fired'); 
+	console.log(Meteor.settings.bitly);
 
 	if(!Meteor.settings.bitly) {
-		throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings'); 
+		throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings [shortenUrl]');
 	}
 
 	var shortenResponse = Meteor.http.get(
@@ -30,8 +31,10 @@ Bitly.shortenURL = function(url) {
 
 Bitly.getClicks = function(link) {
 	if(!Meteor.settings.bitly) {
-		throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings'); 
+		throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings [getClicks]'); 
 	}
+
+	console.log('Bitly.getClicks fired')
 
 	var statsResponse = Meteor.http.get(
 		"https://api-ssl.bitly.com/v3/link/clicks?",
@@ -49,6 +52,7 @@ Bitly.getClicks = function(link) {
 		return statsResponse.data.data.link_clicks
 
 	}
+
 }
 
 Meteor.methods({
@@ -56,34 +60,46 @@ Meteor.methods({
 		check(link, String);
 		return Bitly.getClicks(link); 
 	}
-});
+}); 
 
-// Bitly.getClicks = function(link){
 
-//   if(!Meteor.settings.bitly)
-//     throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings');
 
-//   var statsResponse = Meteor.http.get(
-//     "https://api-ssl.bitly.com/v3/link/clicks?",
-//     {
-//       timeout: 5000,
-//       params:{
-//         "format": "json",
-//         "access_token": Meteor.settings.bitly,
-//         "link": link
-//       }
-//     }
-//   );
-//   if(statsResponse.data.status_code === 200)
-//     return statsResponse.data.data.link_clicks
-// }
 
-// Meteor.methods({
-//   'getBitlyClicks': function(link){
-  	
-// 	return Bitly.getClicks(link);
-//   }
-// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
