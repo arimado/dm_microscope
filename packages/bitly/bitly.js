@@ -34,8 +34,6 @@ Bitly.getClicks = function(link) {
 		throw new Meteor.Error(500, 'Please provide a Bitly token in Meteor.settings [getClicks]'); 
 	}
 
-	console.log('Bitly.getClicks fired')
-
 	var statsResponse = Meteor.http.get(
 		"https://api-ssl.bitly.com/v3/link/clicks?",
 		{
@@ -61,6 +59,32 @@ Meteor.methods({
 		return Bitly.getClicks(link); 
 	}
 }); 
+
+var callInterval = 10000; 
+
+Meteor.setInterval(function(){
+
+	//get all posts with short URL property
+
+	var shortUrlPosts = Posts.find({shortUrl: {$exists:true}}); 
+	var postsNumber = shortUrlPosts.count(); 
+
+	//intialize counter
+	var count = 0; 
+
+	//calculate correct delay for each value throughout the interval 
+	shortUrlPosts.forEach(function(post){
+		console.log(post.title + ' ' + post._id + ' ' + post.shortUrl);
+		var callTimeout = Math.round(callInterval/postsNumber*count); 
+		Meteor.setTimeout(function(){
+			Posts.update(post._id, {$set: {clicks: Bitly.getClicks(post.shortUrl)}});
+		}, callTimeout);
+		count++; 
+	}); 
+
+	console.log('----------------');
+
+}, callInterval); 
 
 
 
